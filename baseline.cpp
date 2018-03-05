@@ -5,13 +5,14 @@
 #include <unistd.h>
 #include "mpi.h"
 #include "pomerize.h"
+#include <vector>
 
 //run compiled code (for 5 Phils) with mpirun -n 5 program
-
+//new recipe: make n=# go
 using namespace std;
 
 //this is how many poems you want each Phil to construct & save
-const int MAXMESSAGES = 10; 
+const int MAXMESSAGES = 100; 
 
 //if you change this base, update the Makefile "clean" accordingly to remove old poems
 const string fileBase = "outFile"; 
@@ -22,7 +23,7 @@ int main ( int argc, char *argv[] )
   int p;  //total MPI processes
   MPI::Status status;
   int tag = 1;
-
+  
   //  Initialize MPI.
   MPI::Init ( argc, argv );
 
@@ -55,7 +56,18 @@ int main ( int argc, char *argv[] )
   ofstream foutLeft(lFile.c_str(), ios::out | ios::app );
   ofstream foutRight(rFile.c_str(), ios::out | ios::app );
 
+  vector<int> hungry;
+
   while (numWritten < MAXMESSAGES) {
+	///////////////////////////////////////////////////////////////////
+	//Custom code	 
+	/////////////////////////////////////////////////////////////////// 
+	sleep(rand()%10); //think for a bit
+	
+	//pop on q 
+	
+	////////////////////////////////////////////////////////////////////
+	/*
     //send 1 test message to each neighbor
     	msgOut = rand() % p; //pick a number/message
 	MPI::COMM_WORLD.Send ( &msgOut, 1, MPI::INT, leftNeighbor, tag ); 
@@ -90,7 +102,7 @@ int main ( int argc, char *argv[] )
 	stanza3 = P.getLine();
 	foutLeft << stanza3 << endl << endl;
     foutRight << stanza3 << endl << endl;
-
+	*/
     numWritten++;
   }
 

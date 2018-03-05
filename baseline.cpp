@@ -17,6 +17,31 @@ const int MAXMESSAGES = 100;
 //if you change this base, update the Makefile "clean" accordingly to remove old poems
 const string fileBase = "outFile"; 
 
+int max(int a, int b)
+{
+  if(a > b)
+  {
+    return a;
+  }
+  else
+  {
+    return b;
+  }
+}
+
+int min(int a, int b)
+{
+  if(a < b)
+  {
+    return a;
+  }
+  else
+  {
+    return b;
+  }
+}
+
+
 int main ( int argc, char *argv[] ) 
 {
   int id; //my MPI ID
@@ -56,17 +81,26 @@ int main ( int argc, char *argv[] )
   ofstream foutLeft(lFile.c_str(), ios::out | ios::app );
   ofstream foutRight(rFile.c_str(), ios::out | ios::app );
 
-  vector<int> hungry;
+
+  //MY VARS
+  bool forks[p];
+
 
   while (numWritten < MAXMESSAGES) {
 	///////////////////////////////////////////////////////////////////
 	//Custom code	 
 	/////////////////////////////////////////////////////////////////// 
-	sleep(rand()%10); //think for a bit
-	
-	//pop on q 
+	sleep(rand()%3); //think for a bit
+	std::cout << id << " is done thinking" << std::endl;
+  std::cout << id << " wants fork " << min(leftNeighbor,rightNeighbor) << std::endl;
+  std::cout << id << " wants fork " << max(leftNeighbor,rightNeighbor) << std::endl;
+
+  std::cout << id << " got their forks" << std::endl;
+		
 	
 	////////////////////////////////////////////////////////////////////
+  //Junk examples
+  ////////////////////////////////////////////////////////////////////
 	/*
     //send 1 test message to each neighbor
     	msgOut = rand() % p; //pick a number/message

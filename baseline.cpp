@@ -64,15 +64,15 @@ int main ( int argc, char *argv[] )
         
     //receive 1 test message from each neighbor
 	MPI::COMM_WORLD.Recv ( &msgIn, 1, MPI::INT, MPI::ANY_SOURCE, tag, status );
-//	std::cout << "Receiving message " << msgIn << " from Philosopher ";
-//	std::cout << status.Get_source() << std::endl;
+  	std::cout << "Receiving message " << msgIn << " from Philosopher ";
+  	std::cout << status.Get_source() << std::endl;
 
 	MPI::COMM_WORLD.Recv ( &msgIn, 1, MPI::INT, MPI::ANY_SOURCE, tag, status );
-//	std::cout << "Receiving message " << msgIn << " from Philosopher ";
-//	std::cout << status.Get_source() << std::endl;	
+  	std::cout << "Receiving message " << msgIn << " from Philosopher ";
+  	std::cout << status.Get_source() << std::endl;	
 
 	//LET'S JUST IGNORE THE MESSAGES AND ASSUME IT'S SAFE TO WRITE TO THE FILE!
-    //std::cout << "ID: " << id << " CARELESSLY writing to " << lFile << " and " << rFile << endl;
+      std::cout << "ID: " << id << " CARELESSLY writing to " << lFile << " and " << rFile << endl;
     //If you want to see correct poems, change MAXMESSAGES to something VERY small and add this sleep
 	//sleep(id); //will delay each process so the initial interleaving(s) will likely be OK
   

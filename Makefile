@@ -10,3 +10,6 @@ run:
 	
 clean:
 	rm -f *.o program outFile*
+
+go:
+	mpirun -n $(n) program

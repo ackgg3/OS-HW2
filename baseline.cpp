@@ -12,7 +12,7 @@
 using namespace std;
 
 //this is how many poems you want each Phil to construct & save
-const int MAXMESSAGES = 100; 
+const int MAXMESSAGES = 10; 
 
 //if you change this base, update the Makefile "clean" accordingly to remove old poems
 const string fileBase = "outFile"; 
@@ -29,6 +29,7 @@ int max(int a, int b)
   }
 }
 
+
 int min(int a, int b)
 {
   if(a < b)
@@ -39,6 +40,27 @@ int min(int a, int b)
   {
     return b;
   }
+}
+
+
+void phil(int idIn) 
+{
+  int sigIn, sigOut;
+  int Wcount = 0;
+  MPI_Status stat;
+  while(Wcount < MAXMESSAGES)
+  {
+  	std::cout << idIn << " is thinking" << std::endl;
+	sleep(rand()%5); //we be thinkin
+  	std::cout << idIn << " wants forks" << std::endl;
+	Wcount++;
+  }
+}
+
+
+void table(int idIn) 
+{
+
 }
 
 
@@ -59,9 +81,9 @@ int main ( int argc, char *argv[] )
   id = MPI::COMM_WORLD.Get_rank ( );
   
   //Safety check - need at least 2 philosophers to make sense
-  if (p < 2) {
+  if (p < 3) {
 	    MPI::Finalize ( );
-	    std::cerr << "Need at least 2 philosophers! Try again" << std::endl;
+	    std::cerr << "Need at least 2 philosophers and one table! Try again" << std::endl;
 	    return 1; //non-normal exit
   }
 
@@ -83,22 +105,24 @@ int main ( int argc, char *argv[] )
 
 
   //MY VARS
-  bool forks[p];
+  const int CHOP_REQ = 1; 	//Signals for ease of use
+  const int CHOP_RES = 2;
+  const int CHOP_REL = 3;
+  bool chops[p];			//Our list of chopsticks
 
-
-  while (numWritten < MAXMESSAGES) {
-	///////////////////////////////////////////////////////////////////
-	//Custom code	 
-	/////////////////////////////////////////////////////////////////// 
-	sleep(rand()%3); //think for a bit
-	std::cout << id << " is done thinking" << std::endl;
-  std::cout << id << " wants fork " << min(leftNeighbor,rightNeighbor) << std::endl;
-  std::cout << id << " wants fork " << max(leftNeighbor,rightNeighbor) << std::endl;
-
-  std::cout << id << " got their forks" << std::endl;
-		
-	
-	////////////////////////////////////////////////////////////////////
+  if(id == 0)
+  {
+  	std::cout << "summoning waiter" << std::endl;
+	table(id);
+  }
+  else
+  {
+  	std::cout << "seating philosopher " << id << std::endl;
+	phil(id);
+  }
+  
+  //while (numWritten < MAXMESSAGES) {
+  ////////////////////////////////////////////////////////////////////
   //Junk examples
   ////////////////////////////////////////////////////////////////////
 	/*
@@ -137,9 +161,9 @@ int main ( int argc, char *argv[] )
 	foutLeft << stanza3 << endl << endl;
     foutRight << stanza3 << endl << endl;
 	*/
-    numWritten++;
-  }
-
+  //  numWritten++;
+  //}
+  std::cout << id << " is done" << std::endl;
   foutLeft.close();
   foutRight.close();
   

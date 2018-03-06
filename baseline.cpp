@@ -17,10 +17,6 @@ const int MAXMESSAGES = 10;
 //if you change this base, update the Makefile "clean" accordingly to remove old poems
 const string fileBase = "outFile"; 
 
-//Signals for ease of use
-const int CHOP_REQ = 1;
-const int CHOP_RES = 2;
-const int CHOP_REL = 3;
 
 int max(int a, int b)
 {
@@ -46,46 +42,6 @@ int min(int a, int b)
     return b;
   }
 }
-
-//Table this for now. not working. probably not the solution
-// void phil(int idIn) 
-// {
-//   int sigIn = 0;
-//   int sigOut = 0;
-//   int Wcount = 0;
-//   MPI::Status stat;
-//   while(Wcount < MAXMESSAGES)
-//   {
-//     std::cout << idIn << " is thinking" << std::endl;
-//     sleep(rand()%5); //we be thinkin
-//     std::cout << idIn << " wants chopsticks" << std::endl;
-//     sigOut = rand();
-//     MPI::COMM_WORLD.Send(&sigOut, 1, MPI::INT, CHOP_REQ, 1);
-//     std::cout << idIn << " asked for chopsticks " << sigOut <<std::endl;
-//     MPI::COMM_WORLD.Recv(&sigIn, 1, MPI::INT, 0, 1, stat);
-//     std::cout << idIn << " got " << sigIn << std::endl;
-//     Wcount++;
-//   }
-// }
-
-
-// void table(int idIn) 
-// {
-//   int sigIn = 0;
-//   int sigOut = 0;
-//   int c = 0;
-//   MPI::Status stat;
-//   while(true)
-//   {
-//     std::cout << " waiter waiting " << std::endl;
-//     MPI::COMM_WORLD.Recv(&sigIn, 1, MPI::INT, MPI::ANY_SOURCE, 1, stat);
-//     std::cout << " waiter got " << sigIn << " from phil " << stat.Get_source()<< std::endl;
-//     sigOut = c;
-//     c++;
-//     MPI::COMM_WORLD.Send(&sigOut, 1, MPI::INT, CHOP_RES, 1);
-//   }
-// }
-
 
 int main ( int argc, char *argv[] ) 
 {
@@ -128,18 +84,6 @@ int main ( int argc, char *argv[] )
   ofstream foutRight(rFile.c_str(), ios::out | ios::app );
 
 
- //  if(id == 0)
- //  {
- //    std::cout << "summoning waiter" << std::endl;
- //    table(id);
- //  }
- //  else
- //  {
- //    sleep(10);
- //    std::cout << "seating philosopher " << id << std::endl;
- //    phil(id);
- // }
- 
   while (numWritten < MAXMESSAGES) {
 
     //recv min

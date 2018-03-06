@@ -128,20 +128,27 @@ int main ( int argc, char *argv[] )
   ofstream foutRight(rFile.c_str(), ios::out | ios::app );
 
 
-  if(id == 0)
-  {
-    std::cout << "summoning waiter" << std::endl;
-    table(id);
-  }
-  else
-  {
-    sleep(10);
-    std::cout << "seating philosopher " << id << std::endl;
-    phil(id);
- }
+ //  if(id == 0)
+ //  {
+ //    std::cout << "summoning waiter" << std::endl;
+ //    table(id);
+ //  }
+ //  else
+ //  {
+ //    sleep(10);
+ //    std::cout << "seating philosopher " << id << std::endl;
+ //    phil(id);
+ // }
  
   while (numWritten < MAXMESSAGES) {
-    
+
+    //recv min
+    //recv max
+    //poem
+    //send min
+    //send max
+
+
   ////////////////////////////////////////////////////////////////////
   //Junk examples
   ////////////////////////////////////////////////////////////////////

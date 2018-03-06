@@ -47,44 +47,44 @@ int min(int a, int b)
   }
 }
 
+//Table this for now. not working. probably not the solution
+// void phil(int idIn) 
+// {
+//   int sigIn = 0;
+//   int sigOut = 0;
+//   int Wcount = 0;
+//   MPI::Status stat;
+//   while(Wcount < MAXMESSAGES)
+//   {
+//     std::cout << idIn << " is thinking" << std::endl;
+//     sleep(rand()%5); //we be thinkin
+//     std::cout << idIn << " wants chopsticks" << std::endl;
+//     sigOut = rand();
+//     MPI::COMM_WORLD.Send(&sigOut, 1, MPI::INT, CHOP_REQ, 1);
+//     std::cout << idIn << " asked for chopsticks " << sigOut <<std::endl;
+//     MPI::COMM_WORLD.Recv(&sigIn, 1, MPI::INT, 0, 1, stat);
+//     std::cout << idIn << " got " << sigIn << std::endl;
+//     Wcount++;
+//   }
+// }
 
-void phil(int idIn) 
-{
-  int sigIn = 0;
-  int sigOut = 0;
-  int Wcount = 0;
-  MPI::Status stat;
-  while(Wcount < MAXMESSAGES)
-  {
-    std::cout << idIn << " is thinking" << std::endl;
-    sleep(rand()%5); //we be thinkin
-    std::cout << idIn << " wants chopsticks" << std::endl;
-    sigOut = rand();
-    MPI::COMM_WORLD.Send(&sigOut, 1, MPI::INT, CHOP_REQ, 1);
-    std::cout << idIn << " asked for chopsticks " << sigOut <<std::endl;
-    MPI::COMM_WORLD.Recv(&sigIn, 1, MPI::INT, 0, 1, stat);
-    std::cout << idIn << " got " << sigIn << std::endl;
-    Wcount++;
-  }
-}
 
-
-void table(int idIn) 
-{
-  int sigIn = 0;
-  int sigOut = 0;
-  int c = 0;
-  MPI::Status stat;
-  while(true)
-  {
-    std::cout << " waiter waiting " << std::endl;
-    MPI::COMM_WORLD.Recv(&sigIn, 1, MPI::INT, MPI::ANY_SOURCE, 1, stat);
-    std::cout << " waiter got " << sigIn << " from phil " << stat.Get_source()<< std::endl;
-    sigOut = c;
-    c++;
-    MPI::COMM_WORLD.Send(&sigOut, 1, MPI::INT, CHOP_RES, 1);
-  }
-}
+// void table(int idIn) 
+// {
+//   int sigIn = 0;
+//   int sigOut = 0;
+//   int c = 0;
+//   MPI::Status stat;
+//   while(true)
+//   {
+//     std::cout << " waiter waiting " << std::endl;
+//     MPI::COMM_WORLD.Recv(&sigIn, 1, MPI::INT, MPI::ANY_SOURCE, 1, stat);
+//     std::cout << " waiter got " << sigIn << " from phil " << stat.Get_source()<< std::endl;
+//     sigOut = c;
+//     c++;
+//     MPI::COMM_WORLD.Send(&sigOut, 1, MPI::INT, CHOP_RES, 1);
+//   }
+// }
 
 
 int main ( int argc, char *argv[] ) 
@@ -92,7 +92,7 @@ int main ( int argc, char *argv[] )
   int id; //my MPI ID
   int p;  //total MPI processes
   MPI::Status status;
-  //int tag = 1;
+  int tag = 1;
   
   //  Initialize MPI.
   MPI::Init ( argc, argv );
@@ -113,10 +113,10 @@ int main ( int argc, char *argv[] )
 
   srand(id + time(NULL)); //ensure different seeds...
 
-  //int numWritten = 0;
+  int numWritten = 0;
   
-  // //setup message storage locations
-  // int msgIn, msgOut;
+  //setup message storage locations
+  int msgIn, msgOut;
   int leftNeighbor = id;
   int rightNeighbor = (id + 1) % p;
 
@@ -140,7 +140,8 @@ int main ( int argc, char *argv[] )
     phil(id);
  }
  
-  //while (numWritten < MAXMESSAGES) {
+  while (numWritten < MAXMESSAGES) {
+    
   ////////////////////////////////////////////////////////////////////
   //Junk examples
   ////////////////////////////////////////////////////////////////////
@@ -180,8 +181,8 @@ int main ( int argc, char *argv[] )
   foutLeft << stanza3 << endl << endl;
     foutRight << stanza3 << endl << endl;
   */
-  //  numWritten++;
-  //}
+    numWritten++;
+  }
  std::cout << id << " is done" << std::endl;
  foutLeft.close();
  foutRight.close();

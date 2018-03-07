@@ -80,20 +80,21 @@ int main ( int argc, char *argv[] )
 
   string lFile = fileBase + to_string(leftNeighbor);
   string rFile = fileBase + to_string(rightNeighbor);
-  ofstream foutLeft(lFile.c_str(), ios::out | ios::app );
-  ofstream foutRight(rFile.c_str(), ios::out | ios::app );
+  ofstream foutLeft(lFile.c_str(), ios::out | ios::app);
+  ofstream foutRight(rFile.c_str(), ios::out | ios::app);
 
   //set all forks to availible
   std::cout << id << " set fork " << leftNeighbor << " to AVBL" << std::endl;
   msgOut = 1;
   MPI::COMM_WORLD.Send (&msgOut, 1, MPI::INT, leftNeighbor, tag); 
   sleep(1);
-  while (numWritten < MAXMESSAGES) {
+  while (numWritten < MAXMESSAGES) 
+  {
     //recv min
     sleep(id);
     std::cout << id << " waiting on chopstick " <<  min(leftNeighbor,rightNeighbor) << std::endl;
     MPI::COMM_WORLD.Recv (&msgIn, 1, MPI::INT, min(leftNeighbor,rightNeighbor), tag, status );
-    std::cout << id << " got chopstick " <<  min(leftNeighbor,rightNeighbor) << " from " << status.Get_source() << std::endl;
+    std::cout << id << " got chopstick " <<  min(leftNeighbor,rightNeighbor) << std::endl;
     //recv max
     std::cout << id << " waiting on chopstick " <<  max(leftNeighbor,rightNeighbor) << std::endl;
     MPI::COMM_WORLD.Recv (&msgIn, 1, MPI::INT, max(leftNeighbor,rightNeighbor), tag, status );
@@ -107,7 +108,6 @@ int main ( int argc, char *argv[] )
     //send max
     std::cout << id << " freeing chopstick " <<  rightNeighbor << std::endl;
     MPI::COMM_WORLD.Send (&msgOut, 1, MPI::INT, rightNeighbor, tag); 
-
 
     numWritten++;
   }

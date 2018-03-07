@@ -60,10 +60,10 @@ int main ( int argc, char *argv[] )
   id = MPI::COMM_WORLD.Get_rank ( );
   
   //Safety check - need at least 2 philosophers to make sense
-  if (p < 3) 
+  if (p < 2) 
   {
-      MPI::Finalize ( );
-      std::cerr << "Need at least 2 philosophers and one table! Try again" << std::endl;
+    MPI::Finalize ( );
+    std::cerr << "Need at least 2 philosophers Try again" << std::endl;
       return 1; //non-normal exit
     }
 
@@ -73,7 +73,7 @@ int main ( int argc, char *argv[] )
   
   //setup message storage locations
   int msgIn, msgOut;
-  int leftNeighbor = id;
+  int leftNeighbor = id;//(id + p - 1) % p;
   int rightNeighbor = (id + 1) % p;
 
   pomerize P;
@@ -83,15 +83,34 @@ int main ( int argc, char *argv[] )
   ofstream foutLeft(lFile.c_str(), ios::out | ios::app );
   ofstream foutRight(rFile.c_str(), ios::out | ios::app );
 
-
+  //set all forks to availible
+  std::cout << id << " set fork " << leftNeighbor << " to AVBL" << std::endl;
+  msgOut = 1;
+  MPI::COMM_WORLD.Send (&msgOut, 1, MPI::INT, leftNeighbor, tag); 
+  sleep(1);
   while (numWritten < MAXMESSAGES) {
-
     //recv min
+    sleep(id);
+    std::cout << id << " waiting on chopstick " <<  min(leftNeighbor,rightNeighbor) << std::endl;
+    MPI::COMM_WORLD.Recv (&msgIn, 1, MPI::INT, min(leftNeighbor,rightNeighbor), tag, status );
+    std::cout << id << " got chopstick " <<  min(leftNeighbor,rightNeighbor) << " from " << status.Get_source() << std::endl;
     //recv max
+    std::cout << id << " waiting on chopstick " <<  max(leftNeighbor,rightNeighbor) << std::endl;
+    MPI::COMM_WORLD.Recv (&msgIn, 1, MPI::INT, max(leftNeighbor,rightNeighbor), tag, status );
+    std::cout << id << " got chopstick " <<  max(leftNeighbor,rightNeighbor) << std::endl;
     //poem
+    std::cout << "!!!!!!" << id << " is eating " << std::endl;
+    //sleep(rand()%3);
     //send min
+    std::cout << id << " freeing chopstick " <<  leftNeighbor << std::endl;
+    MPI::COMM_WORLD.Send (&msgOut, 1, MPI::INT, leftNeighbor, tag); 
     //send max
+    std::cout << id << " freeing chopstick " <<  rightNeighbor << std::endl;
+    MPI::COMM_WORLD.Send (&msgOut, 1, MPI::INT, rightNeighbor, tag); 
 
+
+    numWritten++;
+  }
 
   ////////////////////////////////////////////////////////////////////
   //Junk examples
@@ -132,14 +151,13 @@ int main ( int argc, char *argv[] )
   foutLeft << stanza3 << endl << endl;
     foutRight << stanza3 << endl << endl;
   */
-    numWritten++;
-  }
- std::cout << id << " is done" << std::endl;
- foutLeft.close();
- foutRight.close();
+  
+  std::cout << id << " is done" << std::endl;
+  foutLeft.close();
+  foutRight.close();
 
   //  Terminate MPI.
- MPI::Finalize ( );
- return 0;
+  MPI::Finalize ( );
+  return 0;
 }
 
